@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../screens/destination_detail_page.dart';
+import '../screens/destination_detail_page.dart'; // Import DestinationDetailPage
 
 class PopularDestinationsSection extends StatelessWidget {
   @override
@@ -25,18 +25,42 @@ class PopularDestinationsSection extends StatelessWidget {
                   image: 'assets/popular-1.jpg',
                   title: 'Mykonos',
                   description: 'Sea, sun and the beach...',
+                  details: '''
+Mykonos is a popular Greek island known for its stunning beaches, vibrant nightlife, and picturesque villages. Visitors can enjoy:
+
+- Beautiful sandy beaches such as Paradise Beach and Elia Beach.
+- Charming streets and alleys in Mykonos Town.
+- Historic sites like the Windmills and Paraportiani Church.
+- Delicious Greek cuisine at local tavernas.
+                  ''',
                 ),
                 SizedBox(width: 16.0),
                 DestinationCard(
                   image: 'assets/popular-2.jpg',
                   title: 'Paris',
                   description: 'Romantic times? Into history...',
+                  details: '''
+Paris, the capital city of France, is renowned for its art, fashion, and culture. Highlights include:
+
+- Iconic landmarks like the Eiffel Tower, Notre-Dame Cathedral, and the Louvre Museum.
+- World-class art collections, including the Mona Lisa and Venus de Milo.
+- Charming neighborhoods like Montmartre and Le Marais.
+- Exquisite French cuisine and pastries in quaint cafes and restaurants.
+                  ''',
                 ),
                 SizedBox(width: 16.0),
                 DestinationCard(
                   image: 'assets/popular-3.jpg',
                   title: 'Istanbul',
                   description: 'One of the most magnificent...',
+                  details: '''
+Istanbul, a city that straddles Europe and Asia, is known for its rich history and vibrant culture. Key attractions include:
+
+- The stunning Hagia Sophia and Blue Mosque.
+- The bustling Grand Bazaar and Spice Market.
+- The scenic Bosphorus Strait cruises.
+- Delicious Turkish food including kebabs, baklava, and Turkish tea.
+                  ''',
                 ),
               ],
             ),
@@ -51,11 +75,13 @@ class DestinationCard extends StatelessWidget {
   final String image;
   final String title;
   final String description;
+  final String details;
 
   const DestinationCard({
     required this.image,
     required this.title,
     required this.description,
+    required this.details,
   });
 
   @override
@@ -64,7 +90,13 @@ class DestinationCard extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => DestinationDetailPage(title: title, image: image)),
+          MaterialPageRoute(
+            builder: (context) => DestinationDetailPage(
+              title: title,
+              image: image,
+              details: details,
+            ),
+          ),
         );
       },
       child: Container(
