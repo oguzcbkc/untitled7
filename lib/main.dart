@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_stripe/flutter_stripe.dart' as stripe;
-import 'package:flutter_localizations/flutter_localizations.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import 'screens/home_page.dart';
 import 'screens/profile_page.dart';
 import 'screens/favorites_page.dart';
-import 'screens/bucket_screen.dart'; // Updated import
+import 'screens/bucket_page.dart';
 import 'screens/notifications_page.dart';
 import 'screens/login_page.dart';
 import 'screens/sign_up_page.dart';
 import 'screens/splash_screen.dart';
 import 'screens/welcome_page.dart';
+import 'screens/bookings_page.dart';
+import 'screens/tours_page.dart';  // Make sure this is imported
 import 'models/bucket_model.dart';
+import 'models/favorites_model.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';  // Add this import
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,8 +45,11 @@ class MyApp extends StatelessWidget {
       ),
     );
 
-    return ChangeNotifierProvider(
-      create: (context) => BucketModel(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => BucketModel()),
+        ChangeNotifierProvider(create: (context) => FavoritesModel()),
+      ],
       child: MaterialApp(
         title: 'Travel App',
         theme: customLightTheme,
@@ -63,8 +68,10 @@ class MyApp extends StatelessWidget {
           '/signup': (context) => SignUpPage(),
           '/profile': (context) => ProfilePage(),
           '/favorites': (context) => FavoritesPage(),
-          '/bucket': (context) => BucketScreen(), // Updated route
+          '/bucket': (context) => BucketPage(),
           '/home': (context) => HomePage(),
+          '/bookings': (context) => BookingsPage(),
+          '/tours': (context) => ToursPage(),  // Add route for ToursPage
         },
       ),
     );

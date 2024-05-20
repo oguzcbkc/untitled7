@@ -6,10 +6,9 @@ import '../widgets/gallery_section.dart';
 import '../widgets/interactive_map_section.dart';
 import '../widgets/ratings_reviews_section.dart';
 import '../widgets/social_sharing_section.dart';
-import '../widgets/virtual_tours_section.dart';
 import '../widgets/expandable_cards_section.dart';
-import 'notifications_page.dart'; // Import NotificationsPage
-import '../widgets/weather_info_section.dart'; // Add this import
+import 'notifications_page.dart';
+import 'tours_page.dart';  // Ensure this import
 
 class HomePage extends StatelessWidget {
   @override
@@ -48,6 +47,21 @@ class HomePage extends StatelessWidget {
                 );
               },
             ),
+            ListTile(
+              title: Text('Tours'),  // Add this ListTile
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ToursPage()),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('My Bookings'),  // Add this ListTile
+              onTap: () {
+                Navigator.pushNamed(context, '/bookings');
+              },
+            ),
           ],
         ),
       ),
@@ -56,23 +70,14 @@ class HomePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SearchSection(),
-            WeatherInfoSection(destination: 'New York'), // Add weather info
             PopularDestinationsSection(),
-            ToursSection(),
             GallerySection(),
             InteractiveMapSection(),
             RatingsAndReviewsSection(),
             SocialSharingSection(),
-            VirtualToursSection(),
             ExpandableCardsSection(),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Scrollable.ensureVisible(context);
-        },
-        child: Icon(Icons.arrow_upward),
       ),
     );
   }

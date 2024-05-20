@@ -1,11 +1,14 @@
-// widgets/tours_section.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/bucket_model.dart';
-import '../models/tour_model.dart';
 import '../models/favorites_model.dart';
+import '../models/tour_model.dart';
 
-class ToursSection extends StatelessWidget {
+class ToursPage extends StatelessWidget {
+  final TextEditingController _checkInController = TextEditingController();
+  final TextEditingController _checkOutController = TextEditingController();
+  final TextEditingController _numberOfPeopleController = TextEditingController();
+
   final List<TourItem> tours = [
     TourItem(
       title: 'Unforgettable Beach Holiday in the Balkans',
@@ -13,7 +16,7 @@ class ToursSection extends StatelessWidget {
       image: 'assets/package-1.jpg',
       checkInDate: '',
       checkOutDate: '',
-      numberOfPeople: 1,
+      numberOfPeople: 0,
       reviews: 25,
     ),
     TourItem(
@@ -22,7 +25,7 @@ class ToursSection extends StatelessWidget {
       image: 'assets/package-2.jpg',
       checkInDate: '',
       checkOutDate: '',
-      numberOfPeople: 1,
+      numberOfPeople: 0,
       reviews: 20,
     ),
     TourItem(
@@ -31,30 +34,45 @@ class ToursSection extends StatelessWidget {
       image: 'assets/package-3.jpg',
       checkInDate: '',
       checkOutDate: '',
-      numberOfPeople: 1,
+      numberOfPeople: 0,
       reviews: 40,
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: tours.length,
-      itemBuilder: (context, index) {
-        final tour = tours[index];
-        return TourCard(tour: tour);
-      },
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Tours'),
+      ),
+      body: ListView.builder(
+        itemCount: tours.length,
+        itemBuilder: (context, index) {
+          final tour = tours[index];
+          return TourCard(
+            tour: tour,
+            checkInController: _checkInController,
+            checkOutController: _checkOutController,
+            numberOfPeopleController: _numberOfPeopleController,
+          );
+        },
+      ),
     );
   }
 }
 
 class TourCard extends StatelessWidget {
   final TourItem tour;
-  final TextEditingController _checkInController = TextEditingController();
-  final TextEditingController _checkOutController = TextEditingController();
-  final TextEditingController _numberOfPeopleController = TextEditingController();
+  final TextEditingController checkInController;
+  final TextEditingController checkOutController;
+  final TextEditingController numberOfPeopleController;
 
-  TourCard({required this.tour});
+  TourCard({
+    required this.tour,
+    required this.checkInController,
+    required this.checkOutController,
+    required this.numberOfPeopleController,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +98,7 @@ class TourCard extends StatelessWidget {
             Text('\$${tour.price} per person'),
             Text('${tour.reviews} reviews'),
             TextField(
-              controller: _checkInController,
+              controller: checkInController,
               decoration: InputDecoration(labelText: 'Check-In Date'),
               onTap: () async {
                 DateTime? pickedDate = await showDatePicker(
@@ -90,12 +108,12 @@ class TourCard extends StatelessWidget {
                   lastDate: DateTime(2101),
                 );
                 if (pickedDate != null) {
-                  _checkInController.text = pickedDate.toIso8601String().split('T').first;
+                  checkInController.text = pickedDate.toIso8601String().split('T').first;
                 }
               },
             ),
             TextField(
-              controller: _checkOutController,
+              controller: checkOutController,
               decoration: InputDecoration(labelText: 'Check-Out Date'),
               onTap: () async {
                 DateTime? pickedDate = await showDatePicker(
@@ -105,35 +123,31 @@ class TourCard extends StatelessWidget {
                   lastDate: DateTime(2101),
                 );
                 if (pickedDate != null) {
-                  _checkOutController.text = pickedDate.toIso8601String().split('T').first;
+                  checkOutController.text = pickedDate.toIso8601String().split('T').first;
                 }
               },
             ),
             TextField(
-              controller: _numberOfPeopleController,
+              controller: numberOfPeopleController,
               decoration: InputDecoration(labelText: 'Number of People'),
               keyboardType: TextInputType.number,
             ),
+            SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(
-                  icon: Icon(Icons.star),
-                  onPressed: () {
-                    Provider.of<FavoritesModel>(context, listen: false).addFavorite(tour);
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Added to Favorites')));
-                  },
-                ),
                 ElevatedButton(
                   onPressed: () {
-                    if (_checkInController.text.isNotEmpty && _checkOutController.text.isNotEmpty && _numberOfPeopleController.text.isNotEmpty) {
+                    if (checkInController.text.isNotEmpty &&
+                        checkOutController.text.isNotEmpty &&
+                        numberOfPeopleController.text.isNotEmpty) {
                       final tourItem = TourItem(
                         title: tour.title,
                         price: tour.price,
                         image: tour.image,
-                        checkInDate: _checkInController.text,
-                        checkOutDate: _checkOutController.text,
-                        numberOfPeople: int.parse(_numberOfPeopleController.text),
+                        checkInDate: checkInController.text,
+                        checkOutDate: checkOutController.text,
+                        numberOfPeople: int.parse(numberOfPeopleController.text),
                         reviews: tour.reviews,
                       );
                       Provider.of<BucketModel>(context, listen: false).addItem(tourItem);
@@ -143,6 +157,18 @@ class TourCard extends StatelessWidget {
                     }
                   },
                   child: Text('Add to Bucket'),
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.star,
+                    color: Provider.of<FavoritesModel>(context).favorites.contains(tour)
+                        ? Colors.yellow
+                        : Colors.grey,
+                  ),
+                  onPressed: () {
+                    Provider.of<FavoritesModel>(context, listen: false).addFavorite(tour);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Added to Favorites')));
+                  },
                 ),
               ],
             ),
